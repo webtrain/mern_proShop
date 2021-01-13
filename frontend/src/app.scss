@@ -1,5 +1,7 @@
 * {
-  padding:0;margin:0;box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
 }
 
 body {
@@ -14,5 +16,38 @@ body {
   min-height: 100vh;
 }
 .app {
-  flex:1;
+  flex: 1;
+}
+
+.list-group-item {
+  .form-control {
+    padding: 0.3rem;
+    text-align-last: center;
+  }
+
+  .col {
+    display: flex;
+    align-items: center;
+  }
+}
+
+.cart-page {
+  .row {
+    align-items: center;
+    justify-content: space-between;
+
+    &:first-child {
+      margin-bottom: 1rem;
+    }
+
+    .fa-chevron-left {
+      margin: 0 0.7rem;
+    }
+  }
+
+  .card {
+    h4 {
+      font-size: 0.8rem;
+    }
+  }
 }
