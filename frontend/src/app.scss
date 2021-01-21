@@ -19,6 +19,18 @@ body {
   flex: 1;
 }
 
+.navbar {
+  .dropdown-item {
+    &.active {
+      background: initial;
+      color: initial;
+    }
+    &:hover {
+      background-color: #F8F9FA;
+    }
+  }
+}
+
 .list-group-item {
   .form-control {
     padding: 0.3rem;

@@ -1,15 +1,13 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Row, Col, ListGroup, Image, Form, Button, Card } from 'react-bootstrap';
 import Message from '../components/Message';
-// import Loader from '../components/Loader';
 import { addToCart, removeFromCart } from '../app/slices/cartSlice';
 
 const CartScreen = ({ match, location, history }) => {
   const dispatch = useDispatch();
 
- 
   const products = useSelector((state) => state.cart.products);
 
   const removeFromCartHandler = (id) => {
