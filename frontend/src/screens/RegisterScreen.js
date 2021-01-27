@@ -20,7 +20,7 @@ const RegisterScreen = ({ location, history }) => {
 
   const userInfo = useSelector((state) => state.user.userInfo);
   const userRegister = useSelector((state) => state.user);
-  const { loading, error, errorMsg, registeredUser } = userRegister;
+  const { loading, error, errorMsg } = userRegister;
 
   useEffect(() => {
     if (userInfo) {
@@ -47,7 +47,7 @@ const RegisterScreen = ({ location, history }) => {
         <Form.Group controlId="name">
           <Form.Label>Name</Form.Label>
           <Form.Control
-            type="name"
+            type="text"
             placeholder="Enter name"
             value={name}
             onChange={(e) => setName(e.target.value)}
