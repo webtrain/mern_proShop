@@ -21,7 +21,7 @@ const PlaceOrderScreen = ({ history }) => {
   const { userInfo } = user;
 
   const orderCreate = useSelector((state) => state.order);
-  const { loading, error, errorMsg, success, order } = orderCreate;
+  const { error, errorMsg, success, order } = orderCreate;
 
   // Calculate Prices
   const addDecimals = (num) => {
@@ -31,24 +31,27 @@ const PlaceOrderScreen = ({ history }) => {
   const productsItemsPrice = addDecimals(products.reduce((acc, { price, qty }) => acc + price * qty, 0));
   const productsShippingPrice = addDecimals(productsItemsPrice > 100 ? 0 : 100);
   const productsTaxPrice = addDecimals(Number((0.15 * productsItemsPrice).toFixed(2)));
-  const productsTotalPrice = (Number(productsItemsPrice) + Number(productsTaxPrice) + Number(productsTaxPrice)).toFixed(
-    2
-  );
+  
+  const productsTotalPrice = (
+    Number(productsItemsPrice) +
+    Number(productsShippingPrice) +
+    Number(productsTaxPrice)
+  ).toFixed(2);
 
   useEffect(() => {
     setItemPrice(productsItemsPrice);
     setShippingPrice(productsShippingPrice);
     setTaxPrice(productsTaxPrice);
     setTotalPrice(productsTotalPrice);
-  }, []);
+  }, [history, productsItemsPrice, productsShippingPrice, productsTaxPrice, productsTotalPrice]);
 
   useEffect(() => {
     if (!userInfo) history.push('/login?redirect=placeorder');
-  }, [userInfo]);
+  }, [userInfo, history]);
 
   useEffect(() => {
     if (success) history.push(`/order/${order._id}`);
-  }, [history, success]);
+  }, [history, success, order._id]);
 
   const placeOrderHandler = () => {
     dispatch(

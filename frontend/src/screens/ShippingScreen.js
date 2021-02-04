@@ -21,7 +21,7 @@ const ShippingScreen = ({ history }) => {
 
   useEffect(() => {
     if (!userInfo) history.push('/login?redirect=shipping');
-  }, [userInfo]);
+  }, [userInfo, history]);
 
   const submitHandler = (e) => {
     e.preventDefault();

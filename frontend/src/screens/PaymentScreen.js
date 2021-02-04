@@ -22,7 +22,7 @@ const PaymentScreen = ({ history }) => {
 
   useEffect(() => {
     if (!userInfo) history.push('/login?redirect=payment');
-  }, [userInfo]);
+  }, [userInfo, history]);
 
   const submitHandler = (e) => {
     e.preventDefault();
