@@ -43,7 +43,7 @@ body {
   }
 }
 
-.cart-page {
+.cart-page, .edit-page {
   .row {
     align-items: center;
     justify-content: space-between;
@@ -62,4 +62,11 @@ body {
       font-size: 0.8rem;
     }
   }
+}
+
+
+.edit-page {
+  .fa-chevron-left {
+      margin: 0 0.7rem;
+    }
 }

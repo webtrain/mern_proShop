@@ -13,6 +13,7 @@ const initialState = {
   registeredUser: {},
   userDetails: {},
   userIsUpdated: false,
+  users: [],
 };
 
 const userSlice = createSlice({
@@ -23,7 +24,6 @@ const userSlice = createSlice({
     userLoginSuccess: (state, { payload }) => {
       state.loading = false;
       state.loggedIn = true;
-      state.errorMsg= null;
       state.userInfo = payload;
     },
     userLoginFail: (state, { payload }) => {
@@ -54,8 +54,6 @@ const userSlice = createSlice({
     userDetailsRequest: (state) => void (state.loading = true),
     userDetailsSuccess: (state, { payload }) => {
       state.loading = false;
-      state.error = false;
-      state.errorMsg = null;
       state.userDetails = payload;
     },
     userDetailsFail: (state, { payload }) => {
@@ -77,6 +75,47 @@ const userSlice = createSlice({
       state.error = true;
       state.errorMsg = payload;
     },
+    userListRequest: (state) => void (state.loading = true),
+    userListSuccess: (state, { payload }) => {
+      state.loading = false;
+      state.users = payload;
+    },
+    userListReset: (state) => {
+      state.users = [];
+    },
+    userListFail: (state, { payload }) => {
+      state.loading = false;
+      state.error = true;
+      state.errorMsg = payload;
+    },
+    userDeleteRequest: (state) => void (state.loading = true),
+    userDeleteSuccess: (state) => {
+      state.loading = false;
+      state.success = true;
+    },
+    userDeleteFail: (state, { payload }) => {
+      state.loading = false;
+      state.error = true;
+      state.errorMsg = payload;
+      state.success = false;
+    },
+    userUpdateRequest: (state) => void (state.loading = true),
+    userUpdateSuccess: (state, { payload }) => {
+      state.loading = false;
+      state.success = true;
+    },
+    userUpdateReset: (state) => {
+      state.loading = false;
+      state.error = false;
+      state.errorMsg = null;
+      state.success = false;
+    },
+    userUpdateFail: (state, { payload }) => {
+      state.loading = false;
+      state.error = true;
+      state.errorMsg = payload;
+      state.success = false;
+    },
   },
 });
 
@@ -95,6 +134,17 @@ export const {
   userUpdateProfileSuccess,
   userUpdateProfileReset,
   userUpdateProfileFail,
+  userListRequest,
+  userListSuccess,
+  userListReset,
+  userListFail,
+  userDeleteRequest,
+  userDeleteSuccess,
+  userDeleteFail,
+  userUpdateRequest,
+  userUpdateSuccess,
+  userUpdateReset,
+  userUpdateFail
 } = userSlice.actions;
 
 export default userSlice.reducer;
@@ -123,6 +173,7 @@ export const logout = () => (dispatch) => {
   localStorage.removeItem('userInfo');
   dispatch(userLogout());
   dispatch(orderListMyReset());
+  dispatch(userListReset());
 };
 
 export const register = (name, email, password) => async (dispatch) => {
@@ -166,6 +217,8 @@ export const getUserDetails = (id) => async (dispatch, getState) => {
     const { data } = await axios.get(`/api/users/${id}`, config);
 
     dispatch(userDetailsSuccess(data));
+
+    localStorage.setItem('userDetails', JSON.stringify(data));
   } catch (err) {
     const error = err.response && err.response.data.message ? err.response.data.message : err.message;
     dispatch(userDetailsFail(error));
@@ -196,5 +249,84 @@ export const userUpdateProfile = (user) => async (dispatch, getState) => {
   } catch (err) {
     const error = err.response && err.response.data.message ? err.response.data.message : err.message;
     dispatch(userUpdateProfileFail(error));
+  }
+};
+
+export const listUsers = () => async (dispatch, getState) => {
+  try {
+    dispatch(userListSuccess());
+
+    const {
+      user: {
+        userInfo: { token },
+      },
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    const { data } = await axios.get(`/api/users`, config);
+
+    dispatch(userListSuccess(data));
+
+  } catch (err) {
+    const error = err.response && err.response.data.message ? err.response.data.message : err.message;
+    dispatch(userListFail(error));
+  }
+};
+
+export const deleteUser = (id) => async (dispatch, getState) => {
+  try {
+    dispatch(userDeleteRequest());
+
+    const {
+      user: {
+        userInfo: { token },
+      },
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    await axios.delete(`/api/users/${id}`, config);
+
+    dispatch(userDeleteSuccess());
+  } catch (err) {
+    const error = err.response && err.response.data.message ? err.response.data.message : err.message;
+    dispatch(userDeleteFail(error));
+  }
+};
+
+export const updateUser = (user) => async (dispatch, getState) => {
+  try {
+    dispatch(userUpdateRequest());
+
+    const {
+      user: {
+        userInfo: { token },
+      },
+    } = getState();
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    const { data } = await axios.put(`/api/users/${user._id}`, user, config);
+
+    dispatch(userUpdateSuccess());
+    dispatch(userDetailsSuccess(data));
+
+  } catch (err) {
+    const error = err.response && err.response.data.message ? err.response.data.message : err.message;
+    dispatch(userUpdateFail(error));
   }
 };
