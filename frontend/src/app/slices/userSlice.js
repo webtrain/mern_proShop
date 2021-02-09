@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { orderListMyReset } from './orderSlice';
 
 const userInfoFromStorage = localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')) : null;
 
@@ -22,6 +23,7 @@ const userSlice = createSlice({
     userLoginSuccess: (state, { payload }) => {
       state.loading = false;
       state.loggedIn = true;
+      state.errorMsg= null;
       state.userInfo = payload;
     },
     userLoginFail: (state, { payload }) => {
@@ -52,6 +54,8 @@ const userSlice = createSlice({
     userDetailsRequest: (state) => void (state.loading = true),
     userDetailsSuccess: (state, { payload }) => {
       state.loading = false;
+      state.error = false;
+      state.errorMsg = null;
       state.userDetails = payload;
     },
     userDetailsFail: (state, { payload }) => {
@@ -118,6 +122,7 @@ export const login = (email, password) => async (dispatch) => {
 export const logout = () => (dispatch) => {
   localStorage.removeItem('userInfo');
   dispatch(userLogout());
+  dispatch(orderListMyReset());
 };
 
 export const register = (name, email, password) => async (dispatch) => {

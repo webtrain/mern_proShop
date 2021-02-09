@@ -55,6 +55,7 @@ const OrderScreen = ({ history, match }) => {
     }
 
     if (finalOrder.isPaid || successPay) {
+      console.log('dispatch');
       dispatch(getOrderDetails(orderId));
     }
   }, [userInfo, orderId, history, dispatch, successPay, sdkReady]);
@@ -77,10 +78,11 @@ const OrderScreen = ({ history, match }) => {
               <h2>Shipping</h2>
               <p>
                 <strong>Name: </strong>
-                {finalOrder.user.name}
+                {userInfo && userInfo.name}
               </p>
               <p>
-                <strong>Email: </strong> <a href={`mailto:${finalOrder.user.email}`}>{finalOrder.user.email}</a>
+                <strong>Email: </strong>{' '}
+                <a href={`mailto:${userInfo && userInfo.email}`}>{userInfo && userInfo.email}</a>
               </p>
 
               <p>

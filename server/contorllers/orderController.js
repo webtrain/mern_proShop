@@ -71,7 +71,6 @@ const updateOrderToPaid = asyncHandler(async (req, res) => {
       update_time: update_time,
     };
 
-
     const updatedOrder = await order.save();
     res.json(updatedOrder);
   } else {
@@ -80,4 +79,17 @@ const updateOrderToPaid = asyncHandler(async (req, res) => {
   }
 });
 
-export { addOrderItems, getOrderById, updateOrderToPaid };
+// @desc    Get logged in user orders
+// @route   Get/api/orders/myorders
+// @access  Private
+
+const getMyOrders = asyncHandler(async (req, res) => {
+  
+  console.log(req);
+  const orders = await Order.find({ user: req.user._id });
+
+
+  res.json(orders);
+});
+
+export { addOrderItems, getOrderById, updateOrderToPaid, getMyOrders };
