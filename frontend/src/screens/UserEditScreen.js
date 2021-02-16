@@ -45,7 +45,7 @@ const UserEditScreen = ({ match, history }) => {
   return (
     <>
       <Row className="edit-page">
-        <Link to="/admin/userList">
+        <Link to="/admin/users">
           <i className="fa fa-chevron-left" aria-hidden="true"></i>
           Go back
         </Link>

@@ -6,12 +6,16 @@ import { Provider } from 'react-redux';
 import store from './app/store';
 import './bootstrap.min.css';
 import './app.css';
+import { Helmet, HelmetProvider } from 'react-helmet-async';
 
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <App />
-    </Provider>,
+      <HelmetProvider>
+        <App />
+      </HelmetProvider>
+    </Provider>
+    ,
   </React.StrictMode>,
   document.getElementById('root')
 );

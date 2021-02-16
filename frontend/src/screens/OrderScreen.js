@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import { Row, Col, ListGroup, Image, Card } from 'react-bootstrap';
+import { Row, Col, ListGroup, Image, Card, Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
-import { getOrderDetails } from '../app/slices/orderSlice';
-import { payOrder } from '../app/slices/orderSlice';
-// import { PayPalButton } from 'react-paypal-button-v2';
+import { getOrderDetails, payOrder, deliverOrder } from '../app/slices/orderSlice';
 import PayPalBtn from '../components/payPalButton';
 
 const OrderScreen = ({ history, match }) => {
@@ -23,6 +21,9 @@ const OrderScreen = ({ history, match }) => {
 
   const orderPay = useSelector((state) => state.order);
   const { loading: loadingPay, success: successPay } = orderPay;
+
+  const orderDeliver = useSelector((state) => state.order);
+  const { success: successDeliver } = orderDeliver;
 
   const [sdkReady, setSdkReady] = useState(false);
 
@@ -54,14 +55,17 @@ const OrderScreen = ({ history, match }) => {
       !sdkReady && setSdkReady(true);
     }
 
-    if (finalOrder.isPaid || successPay) {
-      console.log('dispatch');
+    if (finalOrder.isPaid || successPay || successDeliver) {
       dispatch(getOrderDetails(orderId));
     }
   }, [userInfo, orderId, history, dispatch, successPay, sdkReady]);
 
   const successPaymentHandler = (paymentResult) => {
     dispatch(payOrder(orderId, paymentResult));
+  };
+
+  const deliverHandler = () => {
+    dispatch(deliverOrder(order));
   };
 
   return loading ? (
@@ -182,18 +186,16 @@ const OrderScreen = ({ history, match }) => {
                   )}
                 </ListGroup.Item>
               )}
+
+              {userInfo.isAdmin && finalOrder.isPaid && !finalOrder.isDelivered && (
+                <ListGroup.Item>
+                  <Button type="button" className="btn btn-block" onClick={deliverHandler}>
+                    Mark As Delivered
+                  </Button>
+                </ListGroup.Item>
+              )}
             </ListGroup>
 
-            {/* {!finalOrder.isPaid && (
-              <ListGroup.Item>
-                {loadingPay && <Loader />}
-                {!sdkReady ? (
-                  <Loader />
-                ) : (
-                  <PayPalButton amount={finalOrder.totalPrice} onSuccess={successPaymentHandler} />
-                )}
-              </ListGroup.Item>
-            )} */}
           </Card>
         </Col>
       </Row>

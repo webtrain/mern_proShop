@@ -12,7 +12,8 @@ const initialState = {
   order: orderFromStorage,
   finalOrder: finalOrderFromStorage,
   orderPay: {},
-  orderListMy: []
+  orderListMy: [],
+  orders: [],
 };
 
 const orderSlice = createSlice({
@@ -90,6 +91,37 @@ const orderSlice = createSlice({
       state.errorMsg = payload;
       state.orderListMy = [];
     },
+    orderListRequest: (state) => {
+      state.loading = true;
+    },
+    orderListSuccess: (state, { payload }) => {
+      state.loading = false;
+      state.orders = payload;
+    },
+    orderListFail: (state, { payload }) => {
+      state.loading = false;
+      state.error = true;
+      state.errorMsg = payload;
+      state.orders = [];
+    },
+    orderDeliverRequest: (state) => {
+      state.loading = true;
+    },
+    orderDeliverSuccess: (state) => {
+      state.loading = false;
+      state.success = true;
+    },
+    orderDeliverReset: (state) => {
+      state.loading = false;
+      state.error = false;
+      state.success = false;
+      state.errorMsg = null;
+    },
+    orderDeliverFail: (state, { payload }) => {
+      state.loading = false;
+      state.error = true;
+      state.errorMsg = payload;
+    },
   },
 });
 
@@ -108,6 +140,13 @@ export const {
   orderListMySuccess,
   orderListMyReset,
   orderListMyFail,
+  orderListRequest,
+  orderListSuccess,
+  orderListFail,
+  orderDeliverRequest,
+  orderDeliverSuccess,
+  orderDeliverReset,
+  orderDeliverFail,
 } = orderSlice.actions;
 
 export default orderSlice.reducer;
@@ -156,7 +195,7 @@ export const getOrderDetails = (id) => async (dispatch, getState) => {
     };
 
     const { data } = await axios.get(`/api/orders/${id}`, config);
-    console.log(data);
+
     dispatch(orderDetailsSuccess(data));
     localStorage.setItem('finalOrder', JSON.stringify(data));
   } catch (error) {
@@ -212,12 +251,62 @@ export const listMyOrders = () => async (dispatch, getState) => {
 
     const { data } = await axios.get(`/api/orders/myorders`, config);
 
-
     dispatch(orderListMySuccess(data));
 
     localStorage.setItem('finalOrder', JSON.stringify(data));
   } catch (error) {
     const msg = error.response && error.response.data.message ? error.response.data.message : error.message;
     dispatch(orderListMyFail(msg));
+  }
+};
+
+export const getOrders = () => async (dispatch, getState) => {
+  try {
+    dispatch(orderListRequest());
+
+    const {
+      user: {
+        userInfo: { token },
+      },
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    const { data } = await axios.get(`/api/orders`, config);
+
+    dispatch(orderListSuccess(data));
+  } catch (error) {
+    const msg = error.response && error.response.data.message ? error.response.data.message : error.message;
+    dispatch(orderListFail(msg));
+  }
+};
+
+export const deliverOrder = (order) => async (dispatch, getState) => {
+  try {
+    dispatch(orderDeliverRequest());
+
+    const {
+      user: {
+        userInfo: { token },
+      },
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    const { data } = await axios.put(`/api/orders/${order._id}/deliver`, {}, config);
+
+    dispatch(orderDeliverReset());
+    dispatch(orderDeliverSuccess(data));
+  } catch (error) {
+    const msg = error.response && error.response.data.message ? error.response.data.message : error.message;
+    dispatch(orderDeliverFail(msg));
   }
 };

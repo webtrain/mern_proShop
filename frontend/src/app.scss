@@ -26,7 +26,7 @@ body {
       color: initial;
     }
     &:hover {
-      background-color: #F8F9FA;
+      background-color: #f8f9fa;
     }
   }
 }
@@ -43,7 +43,8 @@ body {
   }
 }
 
-.cart-page, .edit-page {
+.cart-page,
+.edit-page {
   .row {
     align-items: center;
     justify-content: space-between;
@@ -64,9 +65,97 @@ body {
   }
 }
 
-
 .edit-page {
   .fa-chevron-left {
-      margin: 0 0.7rem;
+    margin: 0 0.7rem;
+  }
+}
+
+.product-list {
+  tr {
+    text-align: center;
+
+    td {
+      vertical-align: middle;
+
+      &:last-child {
+        width: 7rem;
+      }
     }
+  }
+}
+
+
+.carousel {
+  margin-bottom: 2rem;
+}
+
+.carousel-caption {
+  position: initial;
+  width: 500px;
+}
+
+.carousel-item-next,
+.carousel-item-prev,
+.carousel-item-active {
+  display: flex;
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+  position: absolute;
+  display: block;
+}
+
+.carousel-control-prev span,
+.carousel-control-next span {
+  top: 50%;
+  transform: translateY(-50%);
+  position: absolute;
+}
+
+.carousel-control-prev span {
+  left: 2rem;
+}
+
+.carousel-control-next span {
+  right: 2rem;
+}
+
+.carousel-inner {
+  a {
+    display: flex;
+    align-items: center;
+  }
+  h2 {
+    color: #fff;
+  }
+  img {
+    height: 250px;
+    margin: 40px 40px 40px 80px;
+    border-radius: 50%;
+  }
+}
+
+
+@media (max-width: 768px) {
+  .carousel-inner {
+    padding: 2rem 0;
+    .carousel-caption {
+      width: 330px;
+    }
+  a {
+    flex-direction: column;
+  }
+  
+  img {
+    height: 150px;
+    margin: 1rem;
+  }
+
+  h2 {
+    font-size: 1rem;
+  }
+}
+
 }
